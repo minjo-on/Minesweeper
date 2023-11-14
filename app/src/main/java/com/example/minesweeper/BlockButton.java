@@ -1,19 +1,26 @@
 package com.example.minesweeper;
 
 import android.content.Context;
-import android.widget.Button;
 import android.widget.TableRow;
+import androidx.appcompat.widget.AppCompatButton;
 
-public class BlockButton extends Button {
-
+public class BlockButton extends AppCompatButton {
     private int x;
     private int y;
     private boolean mine;
     private boolean flag;
     private int neighborMines;
 
-    public static int flags=0;
-    public static int blocks=0;
+    public static int flags=10;
+    public static int blocks=81;
+
+    public int getBX() {
+        return x;
+    }
+    public int getBY() {
+        return y;
+    }
+
     public BlockButton(Context context, int x, int y) {
         super(context);
         this.x = x;
@@ -21,8 +28,6 @@ public class BlockButton extends Button {
         this.mine = false;
         this.flag = false;
         this.neighborMines = 0;
-        flags = 0;
-        blocks = 0;
         setLayoutParams(new TableRow.LayoutParams(
                 TableRow.LayoutParams.WRAP_CONTENT,
                 TableRow.LayoutParams.WRAP_CONTENT,
@@ -34,7 +39,7 @@ public class BlockButton extends Button {
         return mine;
     }
     public void setMine(boolean mine){
-        this.mine = mine;
+        this.mine =mine;
     }
     public boolean isFlag(){
         return flag;
@@ -44,8 +49,12 @@ public class BlockButton extends Button {
         flag = !flag;
         if (flag) {
             flags++;
+            setText("");
         } else {
-            flags--;
+            if(flags>0){
+                flags--;
+                setText("F");
+            }
         }
     }
 
@@ -56,18 +65,14 @@ public class BlockButton extends Button {
         this.neighborMines = neighborMines;
     }
     public boolean breakBlock(){
-        setClickable(false);
-
+        setEnabled(false);
         blocks--;
         if(mine){
             setText("M");
             return true;
         }else{
-            if (neighborMines>0){
-                setText(String.valueOf(neighborMines));
-            }else{
-                
-            }
+            setText(String.valueOf(neighborMines));
+            return false;
         }
     }
 }

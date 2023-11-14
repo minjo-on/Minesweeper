@@ -6,68 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TableLayout
-        android:id="@+id/tableLayout"
-        android:layout_width="405dp"
-        android:layout_height="434dp"
-        android:layout_marginTop="100dp"
-        app:layout_constraintTop_toBottomOf="@+id/timeText"
-        tools:layout_editor_absoluteX="3dp">
-
-    </TableLayout>
-
-    <TextView
-        android:id="@+id/minesText"
+    <Button
+        android:id="@+id/startButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:text="Mines:"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toStartOf="@+id/mines"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/mines"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="12dp"
-        android:text="10"
-        android:textSize="24sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/timeText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:text="Time:"
-        android:textSize="24sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:text="0.0"
-        android:textSize="24sp"
-        app:layout_constraintStart_toEndOf="@+id/timeText"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ToggleButton
-        android:id="@+id/breakButton"
-        android:layout_width="391dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="24dp"
-        android:text="BREAK"
-        android:textOff="BREAK"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
+        android:text="START"
+        tools:layout_editor_absoluteX="159dp"
+        tools:layout_editor_absoluteY="382dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
