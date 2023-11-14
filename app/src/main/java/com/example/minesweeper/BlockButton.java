@@ -11,8 +11,8 @@ public class BlockButton extends AppCompatButton {
     private boolean flag;
     private int neighborMines;
 
-    public static int flags=10;
-    public static int blocks=81;
+    public static int flags;
+    public static int blocks;
 
     public int getBX() {
         return x;

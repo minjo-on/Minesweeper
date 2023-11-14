@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AlertDialog;
@@ -16,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MineSweeperActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mine_sweeper);
 
@@ -27,6 +27,8 @@ public class MineSweeperActivity extends AppCompatActivity {
         breakButton = (ToggleButton)findViewById(R.id.breakButton);
         BlockButton[][] buttons = new BlockButton[9][9];
 
+        BlockButton.flags = 10;
+        BlockButton.blocks = 81;
         breakButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,11 +79,28 @@ public class MineSweeperActivity extends AppCompatActivity {
                 buttons[i][j].setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(((BlockButton)view).isMine()){//클릭 했는데 지뢰일 때
+                        if(((BlockButton)view).breakBlock()){//클릭 했는데 지뢰일 때
+                            AlertDialog.Builder dlg = new AlertDialog.Builder(MineSweeperActivity.this);
+                            dlg.setTitle("GameOver"); //제목
+                            dlg.setMessage("게임 종료"); // 메시지
+                            dlg.setPositiveButton("홈으로", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                    startActivity(intent);
+                                }
+                            });
+                            dlg.setNegativeButton("다시하기", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    finish(); // 현재 액티비티 종료
+                                    startActivity(getIntent());
+                                }
+                            });
+                            dlg.show();
                             for(int i=0;i<buttons.length;i++){
                                 for(int j=0;j< buttons[i].length;j++){
                                     if(buttons[i][j].isMine()){
-                                        buttons[i][j].setText('M');
+                                        buttons[i][j].setText("M");
                                         buttons[i][j].setEnabled(false);
                                     }else{
                                         buttons[i][j].setText(buttons[i][j].getNeighborMines()+"");
@@ -105,13 +124,13 @@ public class MineSweeperActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                     Intent intent = new Intent(getApplicationContext(), MineSweeperActivity.class);
                                     startActivity(intent);
+                                    finish();
                                 }
                             });
                             dlg.setNegativeButton("다시하기", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    finish(); // 현재 액티비티 종료
-                                    startActivity(getIntent());
+                                    recreate();
                                 }
                             });
                             dlg.show();
