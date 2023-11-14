@@ -48,12 +48,12 @@ public class BlockButton extends AppCompatButton {
     public void toggleFlag() {
         flag = !flag;
         if (flag) {
-            flags++;
-            setText("");
+            flags--;
+            setText("F");
         } else {
             if(flags>0){
-                flags--;
-                setText("F");
+                flags++;
+                setText("");
             }
         }
     }

@@ -65,10 +65,10 @@
     <TableLayout
         android:id="@+id/tableLayout"
         android:layout_width="375dp"
-        android:layout_height="380dp"
-        android:layout_marginTop="92dp"
+        android:layout_height="464dp"
+        android:layout_marginTop="56dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintHorizontal_bias="0.555"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/timeText">
 

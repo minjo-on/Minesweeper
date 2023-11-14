@@ -1,12 +1,16 @@
 package com.example.minesweeper;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MineSweeperActivity extends AppCompatActivity {
@@ -17,11 +21,36 @@ public class MineSweeperActivity extends AppCompatActivity {
 
         TableLayout table;
         TextView mines;
-        ToggleButton tb;
+        ToggleButton breakButton;
         table = (TableLayout)findViewById(R.id.tableLayout);
         mines = (TextView)findViewById(R.id.mines);
-        //tb = (ToggleButton)findViewById(R.id.)
+        breakButton = (ToggleButton)findViewById(R.id.breakButton);
         BlockButton[][] buttons = new BlockButton[9][9];
+
+        breakButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder dlg = new AlertDialog.Builder(MineSweeperActivity.this);
+                dlg.setTitle("Pause"); //제목
+                dlg.setMessage("중단"); // 메시지
+                dlg.setPositiveButton("홈으로", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
+                    }
+                });
+                dlg.setNeutralButton("재개하기",null);
+                dlg.setNegativeButton("다시하기", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish(); // 현재 액티비티 종료
+                        startActivity(getIntent());
+                    }
+                });
+                dlg.show();
+            }
+        });
+
 
         for(int i=0;i<9;i++){
             TableRow tableRow = new TableRow(this);
@@ -33,32 +62,59 @@ public class MineSweeperActivity extends AppCompatActivity {
                 buttons[i][j] = new BlockButton(this,i,j);
                 buttons[i][j].setLayoutParams(layoutParams);
                 tableRow.addView(buttons[i][j]);
+
+                //길게 터치시 플래그
+                buttons[i][j].setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        ((BlockButton) view).toggleFlag();
+                        mines.setText(BlockButton.flags+"");
+                        return true;
+                    }
+                });
+
+                //일반 클릭시 버튼 open
                 buttons[i][j].setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if(true){//우클릭
-                            ((BlockButton) view).toggleFlag();
-                            mines.setText(10-BlockButton.flags+"");
-                        }else{//좌클릭
-                            if(((BlockButton)view).isMine()){//클릭 했는데 지뢰일 때
-                                for(int i=0;i<buttons.length;i++){
-                                    for(int j=0;j< buttons[i].length;j++){
-                                        if(buttons[i][j].isMine()){
-                                            buttons[i][j].setText('M');
-                                            buttons[i][j].setEnabled(false);
-                                        }else{
-                                            buttons[i][j].setText(buttons[i][j].getNeighborMines()+"");
-                                            buttons[i][j].setEnabled(false);
-                                        }
+                        if(((BlockButton)view).isMine()){//클릭 했는데 지뢰일 때
+                            for(int i=0;i<buttons.length;i++){
+                                for(int j=0;j< buttons[i].length;j++){
+                                    if(buttons[i][j].isMine()){
+                                        buttons[i][j].setText('M');
+                                        buttons[i][j].setEnabled(false);
+                                    }else{
+                                        buttons[i][j].setText(buttons[i][j].getNeighborMines()+"");
+                                        buttons[i][j].setEnabled(false);
                                     }
                                 }
-                            }else{
-                                if(buttons[((BlockButton) view).getBX()][((BlockButton)view).getBY()].getNeighborMines()==0){
-                                    uncoverNeighbors(((BlockButton) view).getBX(),((BlockButton) view).getBY(),view);
-                                }else{
-                                    buttons[((BlockButton) view).getBX()][((BlockButton)view).getBY()].breakBlock();
-                                }
                             }
+                        }else{
+                            if(buttons[((BlockButton) view).getBX()][((BlockButton)view).getBY()].getNeighborMines()==0){
+                                uncoverNeighbors(((BlockButton) view).getBX(),((BlockButton) view).getBY(),view);
+                            }else{
+                                buttons[((BlockButton) view).getBX()][((BlockButton)view).getBY()].breakBlock();
+                            }
+                        }
+
+                        if (BlockButton.flags == 0 && BlockButton.blocks == 10) {
+                            AlertDialog.Builder dlg = new AlertDialog.Builder(MineSweeperActivity.this);
+                            dlg.setTitle("You Win"); //제목
+                            dlg.setMessage("지뢰를 모두 발견했습니다."); // 메시지
+                            dlg.setPositiveButton("홈으로", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent intent = new Intent(getApplicationContext(), MineSweeperActivity.class);
+                                    startActivity(intent);
+                                }
+                            });
+                            dlg.setNegativeButton("다시하기", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    finish(); // 현재 액티비티 종료
+                                    startActivity(getIntent());
+                                }
+                            });
+                            dlg.show();
                         }
                     }
                     void uncoverNeighbors(int x, int y, View view){
@@ -95,17 +151,12 @@ public class MineSweeperActivity extends AppCompatActivity {
         while(mine<10){
             int i = (int)(Math.random()*9);
             int j = (int)(Math.random()*9);
-            if(buttons[i][j].isMine()){
-                continue;
-            }else{
-                //마인 설정
+            if(buttons[i][j].isMine()==false){
                 buttons[i][j].setMine(true);
-                //주변 이웃마인 추가
+                //주변 이웃마인 설정
                 for(int k=0;k<8;k++){
-                    if(i+dx[k]<0 || j+dy[k]<0 || i+dx[k]>8||j+dy[k]>8){//마인이면 그냥 생략
-                        continue;
-                    }else{//마인이 아니면 이웃 마인 +1
-                        buttons[i][j].setNeighborMines(buttons[i][j].getNeighborMines()+1);
+                    if(i+dx[k]>=0 && j+dy[k]>=0 && i+dx[k]<9&&j+dy[k]<9){
+                        buttons[i+dx[k]][j+dy[k]].setNeighborMines(buttons[i+dx[k]][j+dy[k]].getNeighborMines()+1);
                     }
                 }
                 mine++;
