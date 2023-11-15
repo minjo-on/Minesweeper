@@ -1,7 +1,7 @@
 package com.example.minesweeper;
 
 import android.content.Context;
-import android.view.View;
+import android.graphics.Color;
 import android.widget.TableRow;
 import androidx.appcompat.widget.AppCompatButton;
 
@@ -62,14 +62,32 @@ public class BlockButton extends AppCompatButton {
         this.neighborMines = neighborMines;
     }
     public boolean breakBlock(){
+        setColor(this);
         setEnabled(false);
         blocks--;
         if(mine){
             setText("M");
-            return true;
         }else{
             setText(String.valueOf(neighborMines));
-            return true;
+        }
+        return false;
+    }
+    void setColor(BlockButton btn){
+        switch (btn.getNeighborMines()){
+            case 1: btn.setTextColor(Color.RED);
+                break;
+            case 2: btn.setTextColor(Color.rgb(255,165,0));
+                break;
+            case 3: btn.setTextColor(Color.GREEN);
+                break;
+            case 4: btn.setTextColor(Color.BLUE);
+                break;
+            case 5: btn.setTextColor(Color.YELLOW);
+                break;
+            case 6: btn.setTextColor(Color.rgb(0,0,128));
+                break;
+            case 7: btn.setTextColor(Color.rgb(128,0,128));
+                break;
         }
     }
 }
