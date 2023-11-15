@@ -1,6 +1,7 @@
 package com.example.minesweeper;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.TableRow;
 import androidx.appcompat.widget.AppCompatButton;
 
@@ -28,6 +29,7 @@ public class BlockButton extends AppCompatButton {
         this.mine = false;
         this.flag = false;
         this.neighborMines = 0;
+        setEnabled(true);
         setLayoutParams(new TableRow.LayoutParams(
                 TableRow.LayoutParams.WRAP_CONTENT,
                 TableRow.LayoutParams.WRAP_CONTENT,
@@ -41,20 +43,15 @@ public class BlockButton extends AppCompatButton {
     public void setMine(boolean mine){
         this.mine =mine;
     }
-    public boolean isFlag(){
-        return flag;
-    }
-
+    public boolean isFlag(){return flag;}
     public void toggleFlag() {
         flag = !flag;
         if (flag) {
             flags--;
             setText("F");
         } else {
-            if(flags>0){
                 flags++;
                 setText("");
-            }
         }
     }
 
@@ -72,7 +69,7 @@ public class BlockButton extends AppCompatButton {
             return true;
         }else{
             setText(String.valueOf(neighborMines));
-            return false;
+            return true;
         }
     }
 }
