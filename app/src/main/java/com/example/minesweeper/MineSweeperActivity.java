@@ -29,7 +29,6 @@ public class MineSweeperActivity extends AppCompatActivity {
         BlockButton.flags = 10;
         BlockButton.blocks = 81;
         breakButton.setOnClickListener(view -> {
-            System.out.println(breakButton.isEnabled());
             AlertDialog.Builder dlg = new AlertDialog.Builder(MineSweeperActivity.this);
             dlg.setTitle("Pause"); //제목
             dlg.setMessage("중단"); // 메시지
@@ -131,7 +130,7 @@ public class MineSweeperActivity extends AppCompatActivity {
                                 for (int k = -1; k < 2; k++) {
                                     for(int l = -1; l < 2 ; l++){
                                         if (i + k >= 0 && i + k < 9 && j + l >= 0 && j + l < 9) {
-                                            if (buttons[i + k][j + l].isEnabled()) {
+                                            if (buttons[i + k][j + l].isEnabled()&&!buttons[i+k][j+l].isFlag()) {
                                                 if (buttons[i + k][j + l].getNeighborMines() == 0) {
                                                     uncoverNeighbors(i + k, j + l);
                                                 } else {
