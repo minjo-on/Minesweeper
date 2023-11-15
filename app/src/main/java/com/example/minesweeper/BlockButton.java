@@ -70,7 +70,7 @@ public class BlockButton extends AppCompatButton {
         }else{
             setText(String.valueOf(neighborMines));
         }
-        return false;
+        return true;
     }
     void setColor(BlockButton btn){
         switch (btn.getNeighborMines()){
