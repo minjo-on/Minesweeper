@@ -12,15 +12,16 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MineSweeperActivity extends AppCompatActivity {
+
+    TableLayout table;
+    TextView mines;
+    ToggleButton breakButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mine_sweeper);
 
-        TableLayout table;
-        TextView mines;
-        ToggleButton breakButton;
         table = (TableLayout)findViewById(R.id.tableLayout);
         mines = (TextView)findViewById(R.id.mines);
         breakButton = (ToggleButton)findViewById(R.id.breakButton);
@@ -28,6 +29,8 @@ public class MineSweeperActivity extends AppCompatActivity {
         BlockButton[][] buttons = new BlockButton[9][9];
         BlockButton.flags = 10;
         BlockButton.blocks = 81;
+
+        //Clicked breakButton
         breakButton.setOnClickListener(view -> {
             AlertDialog.Builder dlg = new AlertDialog.Builder(MineSweeperActivity.this);
             dlg.setTitle("Pause"); //제목
@@ -41,13 +44,15 @@ public class MineSweeperActivity extends AppCompatActivity {
             dlg.show();
         });
 
-
+        //테이블 행 삽입
         for(int i=0;i<9;i++){
             TableRow tableRow = new TableRow(this);
             TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(
                     TableRow.LayoutParams.WRAP_CONTENT,
                     TableRow.LayoutParams.WRAP_CONTENT,
                     1.0f);
+
+            //행마다 버튼 삽입
             for(int j=0;j<9;j++){
                 buttons[i][j] = new BlockButton(this,i,j);
                 buttons[i][j].setLayoutParams(layoutParams);
@@ -55,7 +60,6 @@ public class MineSweeperActivity extends AppCompatActivity {
 
                 //길게 터치시 플래그
                 buttons[i][j].setOnLongClickListener(view -> {
-                    System.out.println(((BlockButton) view).isFlag()+" "+BlockButton.flags);
                     if(((BlockButton) view).isFlag() || BlockButton.flags>0){
                         ((BlockButton) view).toggleFlag();
                         mines.setText(BlockButton.flags+"");
@@ -74,9 +78,10 @@ public class MineSweeperActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         if(((BlockButton)view).isFlag()){
-
+                            //플래그 표시인 버튼일 경우 아무 것도 안됨
                         }
-                        else if(((BlockButton)view).isMine()){//클릭 했는데 지뢰일 때
+                        else if(((BlockButton)view).isMine()){
+                            //클릭 했는데 지뢰일 때
                             AlertDialog.Builder mineAlertDialog = new AlertDialog.Builder(MineSweeperActivity.this);
                             mineAlertDialog.setTitle("GameOver"); //제목
                             mineAlertDialog.setMessage("게임 종료"); // 메시지
@@ -87,6 +92,7 @@ public class MineSweeperActivity extends AppCompatActivity {
                             mineAlertDialog.setNegativeButton("다시 하기", (dialogInterface, i1) -> recreate());
                             mineAlertDialog.show();
 
+                            //전부 오픈
                             for(int i=0;i<buttons.length;i++){
                                 for(int j=0;j< buttons[i].length;j++){
                                     if(buttons[i][j].isMine()){
@@ -98,6 +104,7 @@ public class MineSweeperActivity extends AppCompatActivity {
                                 }
                             }
                         }else{
+                            //아니면 버튼 공개
                             BlockButton btn = buttons[((BlockButton) view).getBX()][((BlockButton)view).getBY()];
                             if(btn.getNeighborMines()==0){
                                 uncoverNeighbors(btn.getBX(),btn.getBY());
@@ -106,6 +113,7 @@ public class MineSweeperActivity extends AppCompatActivity {
                             }
                         }
 
+                        //지뢰 다 찾았을 때
                         if (BlockButton.flags == 0 && BlockButton.blocks == 10) {
                             AlertDialog.Builder winAlertDialog = new AlertDialog.Builder(MineSweeperActivity.this);
                             winAlertDialog.setTitle("You Win"); //제목
@@ -120,20 +128,22 @@ public class MineSweeperActivity extends AppCompatActivity {
                         }
                     }
 
+                    //주변에 지뢰 없으면 자동 오픈 메소드
                     void uncoverNeighbors(int i, int j) {
                         boolean range = (i >= 0 && i < 9 && j >= 0 && j < 9);
                         if (range) {
                             boolean click = buttons[i][j].isEnabled();
                             boolean neighbor = buttons[i][j].getNeighborMines() == 0;
-                            if (click && neighbor) {
-                                buttons[i][j].breakBlock();
+                            if (click && neighbor) {// 아직 오픈 안됐고, 주변에 지뢰가 없을 때
+                                buttons[i][j].breakBlock(); //본인 꺼 열고
+
                                 for (int k = -1; k < 2; k++) {
                                     for(int l = -1; l < 2 ; l++){
                                         if (i + k >= 0 && i + k < 9 && j + l >= 0 && j + l < 9) {
-                                            if (buttons[i + k][j + l].isEnabled()&&!buttons[i+k][j+l].isFlag()) {
-                                                if (buttons[i + k][j + l].getNeighborMines() == 0) {
+                                            if (buttons[i + k][j + l].isEnabled()&&!buttons[i+k][j+l].isFlag()) {//블럭이 오픈 안됐고, 플래그 표시가 아닐 때
+                                                if (buttons[i + k][j + l].getNeighborMines() == 0) {//그 블럭의 주변에 지뢰가 없으면 재귀
                                                     uncoverNeighbors(i + k, j + l);
-                                                } else {
+                                                } else {//있으면 그거만 오픈
                                                     buttons[i + k][j + l].breakBlock();
                                                 }
                                             }
@@ -143,10 +153,13 @@ public class MineSweeperActivity extends AppCompatActivity {
                             }
                         }
                     }
+
                 });
             }
             table.addView(tableRow);
         }
+
+        //지뢰 설정
         int mine = 0;
         while(mine<10){
             int i = (int)(Math.random()*9);
