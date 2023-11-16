@@ -119,7 +119,7 @@ public class MineSweeperActivity extends AppCompatActivity {
                             winAlertDialog.setTitle("You Win"); //제목
                             winAlertDialog.setMessage("지뢰를 모두 발견했습니다."); // 메시지
                             winAlertDialog.setPositiveButton("홈으로", (dialog, which) -> {
-                                Intent intent = new Intent(getApplicationContext(), MineSweeperActivity.class);
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(intent);
                                 finish();
                             });
